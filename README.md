@@ -15,9 +15,42 @@
 そのため、狭いスコープの課題ですが、botをデータと機械学習でうまく検出し、ブロックする仕組みを構築しましたので、ご参考にしていただけますと幸いです。  
 
 ## 先行研究
- - 
+奈良先端科学技術大学院大学が数年前に出した軽めの（？）論文に、[認知症者􏰀発言􏰁圧縮すると小さなサイズになる](https://www.jstage.jst.go.jp/article/pjsai/JSAI2016/0/JSAI2016_4D11/_pdf)というものがあります。  
 
-## pythonで処理するには同系統アルゴリズムであるbzip2が便利
+認知症の人は、認知症ではない人に比べて、発話した情報が、圧縮アルゴリズムにて圧縮すると、小さくなるというものでした。  
+
+ハフマン符号化をかけることで、頻出するパターンをより短い符号に置き換えでデータの圧縮サイズをあげようというものになります。  
+
+## pythonで処理するには同系統アルゴリズムであるbzip2が便利  
+
+bzip2は、明確に `ブロックソート法` と `ハフマン符号化` を行っており、かつ、pythonで標準でサポートされている圧縮方式より結果が綺麗に出たので、採用しました。  
+
+具体的には、以下のようなプロセスで元のテキストファイルサイズと、圧縮済みのファイルサイズを比較します。  
+
+```python
+import bz2
+import os
+import random
+from pathlib import Path
+
+salt = f"{random.random():0.12f}"                                                                                                              
+pid = f"{os.getpid()}_{salt}"
+
+all_text # ある特定のユーザのツイートを１つにjoinしたもの                                                                                                        
+
+# そのままのテキスト情報を書き込んだときのサイズを取得
+with open(f"/tmp/{pid}", "w") as fp:                                                                                                           
+   fp.write(all_text)                                                                                                                         
+original_size = Path(f"/tmp/{pid}").stat().st_size                                                                                             
+
+# bz2で圧縮した時のサイズを取得
+with bz2.open(f"/tmp/{pid}", "wt") as fp:                                                                                                      
+    fp.write(all_text)                                                                                                                         
+bz2_size = Path(f"/tmp/{pid}").stat().st_size                                                                                                  
+
+# clean up
+Path(f"/tmp/{pid}").unlink()
+```
 
 ## 圧縮アルゴリズムで作った特徴量と、特徴量エンジニアリングで作った特徴量を組み合わせて学習
 
