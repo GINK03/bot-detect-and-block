@@ -33,20 +33,20 @@ import os
 import random
 from pathlib import Path
 
-salt = f"{random.random():0.12f}"                                                                                                              
+salt = f"{random.random():0.12f}"
 pid = f"{os.getpid()}_{salt}"
 
-all_text # ある特定のユーザのツイートを１つにjoinしたもの                                                                                                        
+all_text # ある特定のユーザのツイートを１つにjoinしたもの
 
 # そのままのテキスト情報を書き込んだときのサイズを取得
-with open(f"/tmp/{pid}", "w") as fp:                                                                                                           
-   fp.write(all_text)                                                                                                                         
-original_size = Path(f"/tmp/{pid}").stat().st_size                                                                                             
+with open(f"/tmp/{pid}", "w") as fp:
+   fp.write(all_text)
+original_size = Path(f"/tmp/{pid}").stat().st_size
 
 # bz2で圧縮した時のサイズを取得
-with bz2.open(f"/tmp/{pid}", "wt") as fp:                                                                                                      
-    fp.write(all_text)                                                                                                                         
-bz2_size = Path(f"/tmp/{pid}").stat().st_size                                                                                                  
+with bz2.open(f"/tmp/{pid}", "wt") as fp:
+    fp.write(all_text)
+bz2_size = Path(f"/tmp/{pid}").stat().st_size
 
 # clean up
 Path(f"/tmp/{pid}").unlink()
@@ -57,7 +57,13 @@ Path(f"/tmp/{pid}").unlink()
 ### ラベルの定義
 **スクリーンネームの末尾が `_bot` になっているものをbotと定義**  
 
-botはかなりの数存在し、検索を汚染するような形でよく出現します。twitterのスクリーンネームで末尾に_botをつけているアカウントが存在し、これはほぼbotだろうという前提で処理して良いものであろうと理解できます。スクリーンネームの末尾が `_bot` ならば、botと定義しました。
+botはかなりの数存在し、検索を汚染するような形でよく出現します。twitterのスクリーンネームで末尾に_botをつけているアカウントが存在し、これはほぼbotだろうという前提で処理して良いものであろうと理解できます。スクリーンネームの末尾が `_bot` ならば、botと定義しました。 
+
+
+<div align="center">
+    <img width="500px" src="https://user-images.githubusercontent.com/4949982/87244861-76b7cd00-c47b-11ea-9758-e95ccbe76199.png">
+</div>
+縦軸に `圧縮したファイルサイズ/オリジナルファイルサイズ` , 横軸に `機械的な周期性` を取ると、上記のような散布図を得ることができます。  
 
 **ノイズもままある**  
 `_bot` と末尾のスクリーンネームにつけているのにbot出ない人、それなりにいるんです。Twitterをやっていると理解できる事柄ですが、自身のアイデンティティなどを機械などと近い存在であると思っている人は `_bot` とかつけることがあるようです。  
