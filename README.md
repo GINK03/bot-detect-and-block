@@ -106,15 +106,15 @@ Holdoutで25%をvalidationとして、AUCが悪化しない範囲で学習を継
 #### モデルの結果の訂正評価
 
 **例1: もう使用していないアカウントでアプリ登録をしたアカウントをボットとして判定**  
-連携したアプリからの宣伝のみなのでbot判定でOK  
 <div align="center">
    <img width="350px" src="https://user-images.githubusercontent.com/4949982/87244671-c8f7ee80-c479-11ea-8569-a92c585377da.png">
+   <div>連携したアプリからの宣伝のみなのでbot判定でOK</div>
 </div>
 
 **例2: 出会い系の誘導の業者アカウントをボットとして判定**  
-Webから投稿したと書いてあるが、実態は偽装した業者アカウントbotなので見抜けている
 <div align="center">
    <img width="350px" src="https://user-images.githubusercontent.com/4949982/87244672-cc8b7580-c479-11ea-9170-ca4abfae8453.png">
+   <div>実態は偽装した業者アカウントbotなので見抜けている</div>
 </div>
 
 ## Twitter APIでまとめてbotをブロックする
