@@ -19,7 +19,10 @@ import os
 import zlib
 import bz2
 from loguru import logger
-logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
+
+"""
+ツイートのユニーク率、圧縮比、機械的周期性を計算
+"""
 
 
 def get_ts_from_snowflake(status_url: str) -> datetime.datetime:
@@ -46,10 +49,8 @@ Path("tmp/user_feats").mkdir(exist_ok=True, parents=True)
 
 def proc(user_dir):
     username = Path(user_dir).name
-    # if not re.search("_bot$", username):
     if Path(f"tmp/user_feats/{username}").exists():
         return
-    #    continue
     objs = []
     for feed in glob.glob(f"{user_dir}/FEEDS/*.gz"):
         try:
@@ -93,7 +94,8 @@ def proc(user_dir):
         uniq_text_rate = set(df["text"].tolist()).__len__() / len(df)
 
         # テキストの圧縮サイズがボットのほうが小さいという仮設がある
-        pid = os.getpid()
+        salt = f"{random.random():0.12f}"
+        pid = f"{os.getpid()}_{salt}"
         all_text = "".join(df["text"].tolist())
         with open(f"/tmp/{pid}", "w") as fp:
             fp.write(all_text)
@@ -101,13 +103,14 @@ def proc(user_dir):
         with bz2.open(f"/tmp/{pid}", "wt") as fp:
             fp.write(all_text)
         bz2_size = Path(f"/tmp/{pid}").stat().st_size
+        Path(f"/tmp/{pid}").unlink()
         obj = {"username": username, "is_near_rate": is_near_rate, "uniq_text_rate": uniq_text_rate, "original_size": original_size, "bz2_size": bz2_size}
-        logger.debug(f"{obj}")
+        logger.info(f"{obj}")
         with gzip.open(f"tmp/user_feats/{username}", "wt") as fp:
             fp.write(json.dumps(obj))
     except Exception as exc:
         tb_lineno = sys.exc_info()[2].tb_lineno
-        # print(username, exc, tb_lineno, len(df))
+        logger.info(f"{username}, {exc}, {tb_lineno}, {len(df)}")
 
 
 async def async_proc(user_dir):
@@ -124,12 +127,14 @@ def load(dir):
 
 
 async def load_wrapper():
-    files = glob.glob(f"{HOME}/nvme0n1/*")
-    return [files]
-    # dirs = glob.glob(f"{HOME}/.mnt/nfs/favs*")
+    if os.environ.get("TEST"):
+        logger.info("This is test mode, only use local data.")
+        files = glob.glob(f"{HOME}/nvme0n1/*")
+        return [files]
+    
+    dirs = glob.glob(f"{HOME}/.mnt/nfs/favs*")
     with ThreadPoolExecutor(max_workers=len(dirs)) as exe:
         ret = list(exe.map(load, dirs))
-    # return await asyncio.gather(*[load(dir) for dir in glob.glob(f"{HOME}/.mnt/nfs/favs*")])
     return ret
 
 
@@ -161,9 +166,6 @@ if os.environ.get("MULTIPLE"):
             _
 else:
 
-    async def wrapper(chunk):
-        await asyncio.gather(*[asyncio.create_task(async_proc(user_dir)) for user_dir in chunk])
-
     for i in tqdm(range(0, len(user_dirs), 5)):
         chunk = user_dirs[i: i + 5]
-        asyncio.run(wrapper(chunk))
+        wrapper(chunk)
