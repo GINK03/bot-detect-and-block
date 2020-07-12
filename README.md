@@ -158,8 +158,9 @@ for username, yhat in tqdm(zip(df.username, df.yhat), desc="blocking...", total=
  
 
 ## データとコード
- - Dropbox
- - GitHub
+ - [GitHub](https://github.com/GINK03/bot-detect-and-block): 再現をしたい場合、何をやったかが確認できます
+ - [Dropbox](https://www.dropbox.com/s/zr10lyj322zhc9o/result_20200712.csv?dl=0): 最終的な、推論したスコアを付与したデータ
+ - [Dropbox](https://www.dropbox.com/s/sjlqmw5pk1j1zzu/bot-detect-and-block-snapshot_20200712.zip?dl=0): Githubにあるコードを再現するためのデータ（オリジナルのTweet情報は含みません）
 
 ## Webアプリにできないでしょうか？
  - 常に新鮮なコーパスはあり、集計はできる
