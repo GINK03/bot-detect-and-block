@@ -4,6 +4,11 @@ import japanize_matplotlib
 import pandas as pd
 import re
 import glob
+
+"""
+Dropbox参照: https://www.dropbox.com/s/sjlqmw5pk1j1zzu/bot-detect-and-block-snapshot_20200712.zip?dl=0
+"""
+
 df = pd.concat([pd.read_csv(filename) for filename in glob.glob("./tmp/agged_local_*_files.csv")])
 df["compression_rate"] = df["bz2_size"] / df["original_size"]
 df = df[df["compression_rate"] <= 1]

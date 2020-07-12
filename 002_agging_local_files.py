@@ -8,6 +8,9 @@ import psutil
 import sys
 from loguru import logger
 logger.add(sys.stderr, format="{time} {level} {message}", filter="my_module", level="INFO")
+"""
+このプログラムでの出力結果はDropbox(https://www.dropbox.com/s/sjlqmw5pk1j1zzu/bot-detect-and-block-snapshot_20200712.zip?dl=0) に添付してあります。
+"""
 
 def load(name):
     with gzip.open(f"tmp/user_feats/{name}", "rt") as fp:
@@ -17,7 +20,7 @@ def load(name):
             return None
     return obj
 
-for prefix in list("0123456789"): #list("abcdefghijklmnopqrstuvwxyz_"):
+for prefix in list("0123456789" + "abcdefghijklmnopqrstuvwxyz_"):
     filenames = [fn.split("/")[-1] for fn in glob.glob(f"tmp/user_feats/{prefix}*")]
     logger.info(f"finish load tmp/user_feats/{prefix}*")
     objs = []

@@ -22,6 +22,8 @@ from loguru import logger
 
 """
 ツイートのユニーク率、圧縮比、機械的周期性を計算
+このファイルの計算に必要な元コーパスは、 GINK03/nardtree の重要情報なので添付しませんが、
+Dropbox(https://www.dropbox.com/s/sjlqmw5pk1j1zzu/bot-detect-and-block-snapshot_20200712.zip?dl=0)に処理した結果を添付しています
 """
 
 

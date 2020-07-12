@@ -16,5 +16,6 @@ for username, yhat in tqdm(zip(df.username, df.yhat), desc="blocking...", total=
     try:
         api.create_block(username)
         # time.sleep(0.1) # you may need this
-    except:
+    except Exception as exc:
+        print(exc)
         continue
