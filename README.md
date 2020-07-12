@@ -105,6 +105,8 @@ Holdoutで25%をvalidationとして、AUCが悪化しない範囲で学習を継
 
 #### モデルの結果の訂正評価
 
+（著作権法32条に基づき、技術検証のため、公開情報を引用しています）
+
 **例1: もう使用していないアカウントでアプリ登録をしたアカウントをボットとして判定**  
 <div align="center">
    <img width="350px" src="https://user-images.githubusercontent.com/4949982/87244671-c8f7ee80-c479-11ea-8569-a92c585377da.png">
