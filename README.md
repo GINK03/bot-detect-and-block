@@ -101,7 +101,7 @@ Holdoutで25%をvalidationとして、AUCが悪化しない範囲で学習を継
 ####  作成したモデルのしきい値探索
 **どの程度、blockしていいものかを定義する**  
 
-`_bot` がつくアカウントがTwitterのアカウントの全体の `0.05%` 程度でした。定性的な主張ですが、2%程度は完全にbotに近いアカウントであり、これらを閾値を0.05まで緩めることで、大きなリコールを得ることができました。  
+`_bot` がつくアカウントがTwitterのアカウントの全体の `0.05%` 程度でした。定性的な主張ですが、2%程度は完全にbotに近いアカウントであり、これらを閾値を0.05まで緩めることで、2%程度の大きなリコールを得ることができました。  
 
 <div align="center">
    <img width="500px" src="https://user-images.githubusercontent.com/4949982/87243823-06597d80-c474-11ea-83a9-f585d242f6fb.png">
@@ -158,10 +158,11 @@ for username, yhat in tqdm(zip(df.username, df.yhat), desc="blocking...", total=
  
 
 ## データとコード
- - Dropbox
- - GitHub
+ - [GitHub](https://github.com/GINK03/bot-detect-and-block): 再現をしたい場合、何をやったかが確認できます
+ - [Dropbox](https://www.dropbox.com/s/zr10lyj322zhc9o/result_20200712.csv?dl=0): 最終的な、推論したスコアを付与したデータ
+ - [Dropbox](https://www.dropbox.com/s/sjlqmw5pk1j1zzu/bot-detect-and-block-snapshot_20200712.zip?dl=0): Githubにあるコードを再現するためのデータ（オリジナルのTweet情報は含みません）
 
 ## Webアプリにできないでしょうか？
  - 常に新鮮なコーパスはあり、集計はできる
- - TwitterIDでログインすると、一括でブロックできるアプリは必要な気がします。
+ - TwitterIDでログインすると、一括でブロックできるアプリは作ることができ、また、世の中に必要な気がします。
 
