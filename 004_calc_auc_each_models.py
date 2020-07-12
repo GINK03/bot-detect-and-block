@@ -2,13 +2,14 @@ from sklearn.metrics import roc_auc_score
 import pandas as pd
 import numpy as np
 import re
-from sklearn.linear_model import SGDClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-import glob
-from sklearn.metrics import roc_auc_score
-from concurrent.futures import ProcessPoolExecutor
+from sklearn.linear_model import SGDClassifier 
+from sklearn.linear_model import LogisticRegression 
+from sklearn.model_selection import train_test_split 
+import glob 
+from sklearn.metrics import roc_auc_score 
+from concurrent.futures import ProcessPoolExecutor 
 import lightgbm as lgb
+import pickle
 import seaborn as sns
 import matplotlib; matplotlib.use('agg')
 import matplotlib.pyplot as plt
@@ -31,6 +32,7 @@ print(f"only is_near_rate auc = {roc_auc_score(df['is_bot'], df['is_near_rate'])
 
 # uniq_text_rateだけのAUC print(f"only uniq_text_rate auc = {roc_auc_score(df['is_bot'], df['inv_uniq_text_rate'])}") 
 X,y = df[["is_near_rate", "inv_compression_rate", "inv_uniq_text_rate"]], df["is_bot"]
+print(f"label's is_bot rate = {df['is_bot'].sum()/len(df):0.04f}")
 
 # model = SGDClassifier(loss="log", penalty="l1", tol=1/(10**3), max_iter=1000000)
 model = LogisticRegression()
@@ -69,10 +71,11 @@ def train(xs, ys, param, verbose, early_stopping_rounds, n_estimators):
     test_predictions = clf.predict(xs_val)
     eval_loss = roc_auc_score(ys_val, clf.predict(xs_val))
     print(f'end eval_loss={eval_loss}')
-    return (test_predictions, xs_val, ys_val)
+    return (clf, test_predictions, xs_val, ys_val)
 
-test_predictions, xs_val, ys_val = train(xs=X, ys=y, param=param, verbose=1, early_stopping_rounds=5, n_estimators=1000)
-
+clf, test_predictions, xs_val, ys_val = train(xs=X, ys=y, param=param, verbose=1, early_stopping_rounds=5, n_estimators=1000)
+with open("./tmp/model.pkl", "wb") as fp:
+    pickle.dump(clf, fp)
 
 def save_each_patterm(th):   
     p = test_predictions >= th
